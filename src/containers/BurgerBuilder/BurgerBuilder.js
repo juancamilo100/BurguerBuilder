@@ -5,6 +5,7 @@ import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios-orders'
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import classes from './BurgerBuilder.module.css'
 import logo from '../../components/Logo/Logo'
 
@@ -17,18 +18,28 @@ const INGREDIENT_PRICES = {
 
 const MIN_PRICE = 4
 
-export default class BurgerBuilder extends Component {
+class BurgerBuilder extends Component {
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0,
-        },
+        ingredients: null,
         totalPrice: MIN_PRICE,
         purchasable: false,
         purchasing: false,
         loading: false,
+        error: false
+    }
+
+    componentDidMount() {
+        axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
+            .then(response => {
+                this.setState({
+                    ingredients: response.data
+                })
+            })
+            .catch(error => {
+                this.setState({
+                    error: true
+                })            
+            });
     }
 
     getPurchaseState(ingredients) {
@@ -136,42 +147,53 @@ export default class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0
         }
 
-        const orderSummary = (
-            <OrderSummary
-                ingredients={this.state.ingredients}
-                price={this.state.totalPrice}
-                cancel={() => this.changePurchasingState(false)}
-                continue={this.purchaseContinue}
-            />
-        )
         const spinner = <Spinner />
+        let orderSummary = null;        
+        let burger = this.state.error ? null : spinner;
 
-        const modalContent = this.state.loading ? spinner : orderSummary
-        console.log(modalContent)
+        if (this.state.ingredients) {
+            burger = (
+                <Fragment>
+                    <Burger ingredients={this.state.ingredients} />
+                        <h2 className={classes.Price}>
+                            Price: ${this.state.totalPrice}
+                        </h2>
+                    <BuildControls
+                        add={this.addIngredientHandler}
+                        remove={this.removeIngredientHandler}
+                        ingredients={this.state.ingredients}
+                        disabled={disabledInfo}
+                        purchasable={this.state.purchasable}
+                        ordered={() => this.changePurchasingState(true)}
+                    >
+                        Build Controls
+                    </BuildControls>
+                </Fragment>
+            )
+
+            orderSummary = (
+                <OrderSummary
+                    ingredients={this.state.ingredients}
+                    price={this.state.totalPrice}
+                    cancel={() => this.changePurchasingState(false)}
+                    continue={this.purchaseContinue}
+                />
+            )
+        }
+                
+        const modalContent = this.state.loading ? spinner : orderSummary;
 
         return (
             <Fragment>
                 <Modal
                     show={this.state.purchasing}
-                    hide={() => this.changePurchasingState(false)}
-                >
-                    {modalContent}
+                    hide={() => this.changePurchasingState(false)}>
+                        {modalContent}
                 </Modal>
-                <Burger ingredients={this.state.ingredients} />
-                <h2 className={classes.Price}>
-                    Price: ${this.state.totalPrice}
-                </h2>
-                <BuildControls
-                    add={this.addIngredientHandler}
-                    remove={this.removeIngredientHandler}
-                    ingredients={this.state.ingredients}
-                    disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
-                    ordered={() => this.changePurchasingState(true)}
-                >
-                    Build Controls
-                </BuildControls>
+                {burger}
             </Fragment>
         )
     }
 }
+
+export default withErrorHandler(BurgerBuilder, axios);

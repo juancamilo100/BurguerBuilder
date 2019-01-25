@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <BurgerBuilder />
+          <BurgerBuilder testProp={"something"} />
         </Layout>
       </div>
     );
