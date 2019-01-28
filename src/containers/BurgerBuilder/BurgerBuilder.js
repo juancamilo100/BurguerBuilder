@@ -7,7 +7,7 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios-orders'
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import classes from './BurgerBuilder.module.css'
-import logo from '../../components/Logo/Logo'
+import { withRouter } from 'react-router-dom'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -103,39 +103,13 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinue = () => {
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Juan',
-                address: {
-                    street: 'SomeStreet',
-                    zipCode: '345446',
-                    country: 'USA',
-                },
-                email: 'someemail@someserver.com',
-            },
-            deliveryMethod: 'fastest',
-        }
-
-        this.setState({
-            loading: true,
-        })
-
-        axios
-            .post('/orders.json', order)
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => {
-                this.setState({
-                    loading: false,
-                    purchasing: false
-                })
-            })
+        this.props.history.push({
+            pathname: '/checkout', 
+            state: {
+                ingredients: this.state.ingredients,
+                price: this.state.totalPrice
+            }
+        });
     }
 
     render() {
@@ -196,4 +170,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+export default withRouter(withErrorHandler(BurgerBuilder, axios));

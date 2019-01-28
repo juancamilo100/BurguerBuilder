@@ -1,6 +1,5 @@
 import React, {Fragment, Component} from 'react'
 import Modal from '../../components/UI/Modal/Modal'
-// import withErrorHandler from '../../containers/BurgerBuilder/BurgerBuilder';
 
 const withErrorHandler = (WrappedComponent, axios) => {
     return class extends Component {
