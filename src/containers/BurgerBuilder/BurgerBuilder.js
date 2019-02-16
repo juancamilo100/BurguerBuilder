@@ -59,7 +59,6 @@ class BurgerBuilder extends Component {
 
         this.props.updateIngredients(newIngredients);
         this.props.updatePrice(newPrice.toFixed(2));
-        debugger;
         this.setState({
             purchasable: purchasable,
         })
@@ -69,7 +68,6 @@ class BurgerBuilder extends Component {
         let newIngredients = {
             ...this.props.ingredients,
         }
-        debugger;
 
         if (newIngredients[ingredient] <= 0) {
             return
@@ -122,7 +120,6 @@ class BurgerBuilder extends Component {
         let orderSummary = null;        
         let burger = this.state.error ? null : spinner;
 
-        debugger;
         if (this.props.ingredients) {
             burger = (
                 <Fragment>

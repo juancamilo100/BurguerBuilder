@@ -5,18 +5,6 @@ import ContactData from './ContactData/ContactData'
 import { connect } from 'react-redux';
 
 class Checkout extends Component {
-    // state = { 
-    //     ingredients: {},
-    //     totalPrice: undefined
-    // }
-
-    // componentDidMount() {
-    //     this.setState({
-    //         // ingredients: this.props.location.state.ingredients,
-    //         // price: this.props.location.state.price
-    //     })
-    // }
-
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
     }
@@ -34,7 +22,7 @@ class Checkout extends Component {
                     checkoutContinued={this.checkoutContinuedHandler} />
                 <Route 
                     path={this.props.match.path + '/contact-data'} 
-                    render={() => <ContactData price={this.props.price} />} />
+                    render={() => <ContactData />} />
             </div>
         )
     }

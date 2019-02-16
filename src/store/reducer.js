@@ -9,7 +9,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     let newState = {}
-    debugger;
+    
     switch (action.type) {
         case actions.UPDATE_INGREDIENTS:
             newState = {
