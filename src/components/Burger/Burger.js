@@ -1,5 +1,4 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
 import classes from './Burger.module.css'
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient'
 
@@ -26,7 +25,5 @@ const Burger = props => {
         </div>
     )
 }
-
-// Burger.propTypes = {}
 
 export default Burger
