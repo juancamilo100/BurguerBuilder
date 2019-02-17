@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import reducer from './store/reducer'
+import reducer from './store/reducers/reducer'
 import { createStore, applyMiddleware, compose } from 'redux'
 
 const middleware = store => {

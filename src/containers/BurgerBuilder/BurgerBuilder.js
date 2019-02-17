@@ -9,7 +9,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import classes from './BurgerBuilder.module.css'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import actions from '../../store/actions';
+import { updateIngredients, updatePrice } from '../../store/actions/actions';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -162,8 +162,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateIngredients: (ingredients) => dispatch({type: actions.UPDATE_INGREDIENTS, ingredients}),
-        updatePrice: (price) => dispatch({type: actions.UPDATE_PRICE, price})
+        updateIngredients: (ingredients) => dispatch(updateIngredients(ingredients)),
+        updatePrice: (price) => dispatch(updatePrice(price))
     }
 }
 

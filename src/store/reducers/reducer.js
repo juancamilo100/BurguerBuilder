@@ -1,4 +1,5 @@
-import actions from './actions'
+import actions from '../actions/actionTypes'
+import { updateObject } from '../utils'
 
 const MIN_PRICE = 4
 
@@ -12,18 +13,10 @@ const reducer = (state = initialState, action) => {
     
     switch (action.type) {
         case actions.UPDATE_INGREDIENTS:
-            newState = {
-                ...state,
-                ingredients: action.ingredients
-            }
-            break;
+            return updateObject(state, {ingredients: action.ingredients})
 
         case actions.UPDATE_PRICE:
-            newState = {
-                ...state,
-                price: action.price
-            }
-            break;
+            return updateObject(state, {price: action.price})
     
         default:
             newState = {...state}
