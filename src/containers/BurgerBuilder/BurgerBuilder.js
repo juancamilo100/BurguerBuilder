@@ -22,7 +22,6 @@ const MIN_PRICE = 4
 
 class BurgerBuilder extends Component {
     state = {
-        purchasable: false,
         purchasing: false,
         loading: false,
         error: false
@@ -55,13 +54,9 @@ class BurgerBuilder extends Component {
 
         newIngredients[ingredient] = newIngredients[ingredient] + 1
         let newPrice = this.getPrice(newIngredients)
-        let purchasable = this.getPurchaseState(newIngredients)
 
         this.props.updateIngredients(newIngredients);
         this.props.updatePrice(newPrice.toFixed(2));
-        this.setState({
-            purchasable: purchasable,
-        })
     }
 
     removeIngredientHandler = ingredient => {
@@ -75,14 +70,9 @@ class BurgerBuilder extends Component {
 
         newIngredients[ingredient] = newIngredients[ingredient] - 1
         let newPrice = this.getPrice(newIngredients)
-        let purchasable = this.getPurchaseState(newIngredients)
 
         this.props.updateIngredients(newIngredients);
         this.props.updatePrice(newPrice.toFixed(2));
-        
-        this.setState({
-            purchasable: purchasable,
-        })
     }
 
     getPrice(ingredients) {
@@ -102,9 +92,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinue = () => {
-        this.props.history.push({
-            pathname: '/checkout', 
-        });
+        this.props.history.push('/checkout');
     }
 
     render() {
@@ -132,7 +120,7 @@ class BurgerBuilder extends Component {
                         remove={this.removeIngredientHandler}
                         ingredients={this.props.ingredients}
                         disabled={disabledInfo}
-                        purchasable={this.state.purchasable}
+                        purchasable={this.getPurchaseState(this.props.ingredients)}
                         ordered={() => this.changePurchasingState(true)}
                     >
                         Build Controls
