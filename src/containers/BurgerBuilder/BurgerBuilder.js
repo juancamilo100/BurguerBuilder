@@ -9,7 +9,11 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import classes from './BurgerBuilder.module.css'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { updateIngredients, updatePrice } from '../../store/actions/actions';
+import { 
+    updateIngredients, 
+    updatePrice,
+    fetchIngredients
+ } from '../../store/actions/';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -24,19 +28,10 @@ class BurgerBuilder extends Component {
     state = {
         purchasing: false,
         loading: false,
-        error: false
     }
 
     componentDidMount() {
-        axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
-            .then(response => {
-                this.props.updateIngredients(response.data);
-            })
-            .catch(error => {
-                this.setState({
-                    error: true
-                })            
-            });
+        this.props.fetchIngredients();
     }
 
     getPurchaseState(ingredients) {
@@ -106,7 +101,7 @@ class BurgerBuilder extends Component {
 
         const spinner = <Spinner />
         let orderSummary = null;        
-        let burger = this.state.error ? null : spinner;
+        let burger = this.props.error ? null : spinner;
 
         if (this.props.ingredients) {
             burger = (
@@ -156,14 +151,16 @@ class BurgerBuilder extends Component {
 const mapStateToProps = (state) => {
     return {
         ingredients: state.ingredients,
-        price: state.price 
+        price: state.price,
+        error: state.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         updateIngredients: (ingredients) => dispatch(updateIngredients(ingredients)),
-        updatePrice: (price) => dispatch(updatePrice(price))
+        updatePrice: (price) => dispatch(updatePrice(price)),
+        fetchIngredients: () => dispatch(fetchIngredients())
     }
 }
 

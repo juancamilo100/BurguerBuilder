@@ -6,24 +6,23 @@ const MIN_PRICE = 4
 const initialState = {
     ingredients: null,
     price: MIN_PRICE,
+    error: false
 }
 
 const reducer = (state = initialState, action) => {
-    let newState = {}
-    
     switch (action.type) {
         case actions.UPDATE_INGREDIENTS:
-            return updateObject(state, {ingredients: action.ingredients})
+            return updateObject(state, {ingredients: action.ingredients, error:false})
 
         case actions.UPDATE_PRICE:
             return updateObject(state, {price: action.price})
+            
+        case actions.FETCH_INGREDIENTS_FAILED:
+            return updateObject(state, {error: true})
     
         default:
-            newState = {...state}
-            break;
+            return {...state}
     }
-
-    return newState
 }
 
 export default reducer;

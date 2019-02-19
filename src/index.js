@@ -5,8 +5,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import reducer from './store/reducers/reducer'
+import burguerBuilderReducer from './store/reducers/burgerBuilder'
 import { createStore, applyMiddleware, compose } from 'redux'
+import thunk from 'redux-thunk';
 
 const middleware = store => {
     return next => {
@@ -20,8 +21,9 @@ const middleware = store => {
     }
 }
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, composeEnhancers(
-    applyMiddleware(middleware)
+const store = createStore(burguerBuilderReducer, composeEnhancers(
+    // applyMiddleware(middleware),
+    applyMiddleware(thunk)
 ));
 
 const app = (
