@@ -152,7 +152,6 @@ const mapStateToProps = (state) => {
         ingredients: state.burgerBuilderReducer.ingredients,
         price: state.burgerBuilderReducer.price,
         error: state.burgerBuilderReducer.error,
-        loading: state.
     }
 }
 
