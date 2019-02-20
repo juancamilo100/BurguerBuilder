@@ -101,8 +101,11 @@ class BurgerBuilder extends Component {
         }
 
         const spinner = <Spinner />
-        let orderSummary = null;        
-        let burger = this.props.loading ? null : spinner;
+        let burger = null;
+        let orderSummary = null;
+        let errorMessage = <h1>Error fetching data</h1>        
+        burger = this.props.error ? errorMessage : null;
+        burger = this.props.loading ? spinner : null;
 
         if (this.props.ingredients) {
             burger = (
@@ -152,6 +155,7 @@ const mapStateToProps = (state) => {
         ingredients: state.burgerBuilderReducer.ingredients,
         price: state.burgerBuilderReducer.price,
         error: state.burgerBuilderReducer.error,
+        loading: state.burgerBuilderReducer.loading
     }
 }
 

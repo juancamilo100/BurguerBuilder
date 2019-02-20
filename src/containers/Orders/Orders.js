@@ -5,7 +5,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
 import {
     fetchOrders,
-} from '../../store/actions/'
+} from '../../store/actions'
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Orders extends Component {

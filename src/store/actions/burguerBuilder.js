@@ -21,13 +21,27 @@ export const fetchIngredientsFailed = () => {
     }
 }
 
+export const startLoading = () => {
+    return {
+        type: actions.START_LOADING
+    }
+}
+
+export const finishedLoading = () => {
+    return {
+        type: actions.FINISHED_LOADING
+    }
+}
+
 export const fetchIngredients = () => {
     return async (dispatch) => {
         try {
-            const res = await axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
+            dispatch(startLoading());
+            const res = await axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.jso')
             dispatch(updateIngredients(res.data));
         } catch (error) {
             dispatch(fetchIngredientsFailed());
         }
+        dispatch(finishedLoading())
     }
 }
