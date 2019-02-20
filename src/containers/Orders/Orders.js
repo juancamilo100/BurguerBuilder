@@ -34,10 +34,10 @@ class Orders extends Component {
     }
 }
 
-const mapPropsToState = (state) => {
+const mapStateToProps = (state) => {
     return {
-        orders: state.orderReducer.orders,
-        loading: state.orderReducer.loading
+        orders: state.orders.orders,
+        loading: state.orders.loading
     }
 }
 
@@ -47,4 +47,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapPropsToState, mapDispatchToProps)(withErrorHandler(Orders, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));

@@ -36,4 +36,4 @@ const burgerBuilderReducer = (state = initialState, action) => {
     }
 }
 
-export { burgerBuilderReducer };
+export { burgerBuilderReducer as burgerBuilder };

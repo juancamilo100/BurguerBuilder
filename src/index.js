@@ -6,16 +6,16 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import {
-    burgerBuilderReducer,
-    orderReducer
+    burgerBuilder,
+    orders
 } from './store/reducers/'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
-    burgerBuilderReducer,
-    orderReducer
+    burgerBuilder,
+    orders
 })
 const store = createStore(rootReducer, composeEnhancers(
     applyMiddleware(thunk)

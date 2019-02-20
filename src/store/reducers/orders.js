@@ -8,7 +8,7 @@ const initialState = {
     purchased: false
 }
 
-export const orderReducer = (state = initialState, action) => {
+const ordersReducer = (state = initialState, action) => {
     switch (action.type) {
         case actions.PURCHASE_BURGER_SUCCESS:
             const newOrder = {
@@ -50,3 +50,5 @@ export const orderReducer = (state = initialState, action) => {
             return state;
     }
 }
+
+export { ordersReducer as orders }

@@ -37,7 +37,7 @@ export const fetchIngredients = () => {
     return async (dispatch) => {
         try {
             dispatch(startLoading());
-            const res = await axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.jso')
+            const res = await axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
             dispatch(updateIngredients(res.data));
         } catch (error) {
             dispatch(fetchIngredientsFailed());

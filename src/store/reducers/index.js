@@ -1,7 +1,7 @@
 export {
-    burgerBuilderReducer
+    burgerBuilder
 } from './burgerBuilder'
 
 export {
-    orderReducer
-} from './order'
+    orders
+} from './orders'
