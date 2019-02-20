@@ -5,5 +5,9 @@ export {
 } from './burguerBuilder'
 
 export {
-
+    updateOrders,
+    fetchOrders,
+    purchaseBurgerStart,
+    startLoading,
+    purchaseInit
 } from './order'

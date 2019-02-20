@@ -12,7 +12,8 @@ import { connect } from 'react-redux'
 import { 
     updateIngredients, 
     updatePrice,
-    fetchIngredients
+    fetchIngredients,
+    purchaseInit
  } from '../../store/actions/';
 
 const INGREDIENT_PRICES = {
@@ -27,7 +28,6 @@ const MIN_PRICE = 4
 class BurgerBuilder extends Component {
     state = {
         purchasing: false,
-        loading: false,
     }
 
     componentDidMount() {
@@ -87,6 +87,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinue = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
 
@@ -101,7 +102,7 @@ class BurgerBuilder extends Component {
 
         const spinner = <Spinner />
         let orderSummary = null;        
-        let burger = this.props.error ? null : spinner;
+        let burger = this.props.loading ? null : spinner;
 
         if (this.props.ingredients) {
             burger = (
@@ -133,14 +134,12 @@ class BurgerBuilder extends Component {
             )
         }
                 
-        const modalContent = this.state.loading ? spinner : orderSummary;
-
         return (
             <Fragment>
                 <Modal
                     show={this.state.purchasing}
                     hide={() => this.changePurchasingState(false)}>
-                        {modalContent}
+                        {orderSummary}
                 </Modal>
                 {burger}
             </Fragment>
@@ -150,9 +149,10 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients,
-        price: state.price,
-        error: state.error
+        ingredients: state.burgerBuilderReducer.ingredients,
+        price: state.burgerBuilderReducer.price,
+        error: state.burgerBuilderReducer.error,
+        loading: state.
     }
 }
 
@@ -160,7 +160,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateIngredients: (ingredients) => dispatch(updateIngredients(ingredients)),
         updatePrice: (price) => dispatch(updatePrice(price)),
-        fetchIngredients: () => dispatch(fetchIngredients())
+        fetchIngredients: () => dispatch(fetchIngredients()),
+        onInitPurchase: () => dispatch(purchaseInit())
     }
 }
 

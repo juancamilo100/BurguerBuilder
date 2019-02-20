@@ -4,7 +4,7 @@ import axios from '../../axios-orders'
 export const updateIngredients = (ingredients) => {
     return {
         type: actions.UPDATE_INGREDIENTS, 
-        ingredients
+        ingredients,
     }
 }
 
@@ -22,13 +22,12 @@ export const fetchIngredientsFailed = () => {
 }
 
 export const fetchIngredients = () => {
-    return (dispatch) => {
-        axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
-            .then((res) => {
-                dispatch(updateIngredients(res.data));
-            }) 
-            .catch(() => {
-                dispatch(fetchIngredientsFailed());
-            })
+    return async (dispatch) => {
+        try {
+            const res = await axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
+            dispatch(updateIngredients(res.data));
+        } catch (error) {
+            dispatch(fetchIngredientsFailed());
+        }
     }
 }
