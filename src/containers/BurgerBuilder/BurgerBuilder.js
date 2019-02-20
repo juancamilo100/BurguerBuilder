@@ -9,7 +9,12 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import classes from './BurgerBuilder.module.css'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import actions from '../../store/actions';
+import { 
+    updateIngredients, 
+    updatePrice,
+    fetchIngredients,
+    purchaseInit
+ } from '../../store/actions/';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -23,20 +28,10 @@ const MIN_PRICE = 4
 class BurgerBuilder extends Component {
     state = {
         purchasing: false,
-        loading: false,
-        error: false
     }
 
     componentDidMount() {
-        axios.get('https://burger-builder-353c4.firebaseio.com/ingredients.json')
-            .then(response => {
-                this.props.updateIngredients(response.data);
-            })
-            .catch(error => {
-                this.setState({
-                    error: true
-                })            
-            });
+        this.props.fetchIngredients();
     }
 
     getPurchaseState(ingredients) {
@@ -92,6 +87,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinue = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
 
@@ -105,8 +101,11 @@ class BurgerBuilder extends Component {
         }
 
         const spinner = <Spinner />
-        let orderSummary = null;        
-        let burger = this.state.error ? null : spinner;
+        let burger = null;
+        let orderSummary = null;
+        let errorMessage = <h1>Error fetching data</h1>        
+        burger = this.props.error ? errorMessage : null;
+        burger = this.props.loading ? spinner : null;
 
         if (this.props.ingredients) {
             burger = (
@@ -138,14 +137,12 @@ class BurgerBuilder extends Component {
             )
         }
                 
-        const modalContent = this.state.loading ? spinner : orderSummary;
-
         return (
             <Fragment>
                 <Modal
                     show={this.state.purchasing}
                     hide={() => this.changePurchasingState(false)}>
-                        {modalContent}
+                        {orderSummary}
                 </Modal>
                 {burger}
             </Fragment>
@@ -155,15 +152,19 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients,
-        price: state.price 
+        ingredients: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.price,
+        error: state.burgerBuilder.error,
+        loading: state.burgerBuilder.loading
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateIngredients: (ingredients) => dispatch({type: actions.UPDATE_INGREDIENTS, ingredients}),
-        updatePrice: (price) => dispatch({type: actions.UPDATE_PRICE, price})
+        updateIngredients: (ingredients) => dispatch(updateIngredients(ingredients)),
+        updatePrice: (price) => dispatch(updatePrice(price)),
+        fetchIngredients: () => dispatch(fetchIngredients()),
+        onInitPurchase: () => dispatch(purchaseInit())
     }
 }
 
