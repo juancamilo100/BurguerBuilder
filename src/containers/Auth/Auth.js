@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css'
+import { auth } from '../../store/actions/'
+import { connect } from 'react-redux';
 
-export default class Auth extends Component {
+class Auth extends Component {
     state = {
         controls: {
-            name: this.getFormInput('input', { type: 'email', placeholder: 'Email Address' }, { required: true, minLength: 3, isEmail: true }),
+            email: this.getFormInput('input', { type: 'email', placeholder: 'Email Address' }, { required: true, minLength: 3, isEmail: true }),
             password: this.getFormInput('input', { type: 'password', placeholder: 'Password' }, { required: true, minLength: 6 })
         }
     }
@@ -67,9 +69,10 @@ export default class Auth extends Component {
     }
 
     onAuthSubmit = () => {
-        for(let formElementIdentifier in this.state.controls) {
-            console.log(this.state.controls[formElementIdentifier].value);
-        }
+        this.props.authorize(this.state.controls.email.value, this.state.controls.password.value);
+        // for(let formElementIdentifier in this.state.controls) {
+        //     console.log(this.state.controls[formElementIdentifier].value);
+        // }
     }
 
     inputChangedHandler = (event, controlName) => {
@@ -105,7 +108,7 @@ export default class Auth extends Component {
         })
 
         let form = (
-            <form>
+            <form onSubmit={this.onAuthSubmit}>
                 {inputElements}
             </form>
         );
@@ -119,6 +122,10 @@ export default class Auth extends Component {
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        authorize: (email, password) => dispatch(auth(email, password))
+    }
+}
 
-let finalNumber = 'XXVIIILXXXII'
-let sortedFinalNumber = ''
+export default connect(null, mapDispatchToProps)(Auth);
