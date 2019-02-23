@@ -67,7 +67,6 @@ export default class Auth extends Component {
     }
 
     onAuthSubmit = () => {
-        console.log("Something");
         for(let formElementIdentifier in this.state.controls) {
             console.log(this.state.controls[formElementIdentifier].value);
         }
