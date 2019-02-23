@@ -5,3 +5,7 @@ export {
 export {
     orders
 } from './orders'
+
+export {
+    auth
+} from './auth'

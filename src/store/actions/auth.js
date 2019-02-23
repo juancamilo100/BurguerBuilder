@@ -1,8 +1,5 @@
 import * as actions from '../actions/actionTypes'
 import axios from 'axios'
-import {
-    FIREBASE_API_KEY
-} from '../../config'
 
 const authStart = () => {
     return {
@@ -10,10 +7,11 @@ const authStart = () => {
     }
 }
 
-const authSuccess = (authData) => {
+const authSuccess = (token, userId) => {
     return {
         type: actions.AUTH_SUCCESS,
-        authData
+        token,
+        userId
     }
 }
 
@@ -24,20 +22,26 @@ const authFailed = (error) => {
     }
 }
 
-export const auth = (email, password) => {
+export const auth = (email, password, isSignup) => {
     return async (dispatch) => {
         dispatch(authStart())
         try {
+            const url = isSignup ?
+            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${process.env.REACT_APP_FIREBASE_API_KEY}` :
+            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${process.env.REACT_APP_FIREBASE_API_KEY}`;
+            
             const response = await axios.post(
-                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + FIREBASE_API_KEY,
+                url,
                 {
                     email,
                     password,
                     returnSecureToken: true
                 }
-            );
-            dispatch(authSuccess(response))
-        } catch (error) {
+                );
+                dispatch(authSuccess(response.data.idToken, response.data.localId))
+            } catch (error) {
+            console.log(error);
+            
             dispatch(authFailed(error))
         }
     }

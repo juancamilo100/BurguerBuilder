@@ -10,7 +10,8 @@ class Auth extends Component {
         controls: {
             email: this.getFormInput('input', { type: 'email', placeholder: 'Email Address' }, { required: true, minLength: 3, isEmail: true }),
             password: this.getFormInput('input', { type: 'password', placeholder: 'Password' }, { required: true, minLength: 6 })
-        }
+        },
+        isSignUp: true
     }
 
     getFormInput(type, config, validation) {
@@ -69,10 +70,7 @@ class Auth extends Component {
     }
 
     onAuthSubmit = () => {
-        this.props.authorize(this.state.controls.email.value, this.state.controls.password.value);
-        // for(let formElementIdentifier in this.state.controls) {
-        //     console.log(this.state.controls[formElementIdentifier].value);
-        // }
+        this.props.signUp(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
     }
 
     inputChangedHandler = (event, controlName) => {
@@ -88,6 +86,15 @@ class Auth extends Component {
 
         this.setState({
             controls: updatedControls
+        })
+    }
+
+    switchAuthMode = () => {
+        this.setState((prevState) => {
+            return {
+                ...this.state,
+                isSignUp: !prevState.isSignUp   
+            }
         })
     }
 
@@ -116,7 +123,8 @@ class Auth extends Component {
         return (
             <div className={classes.Auth}>
                 {form}
-                <Button type="Success" clicked={this.onAuthSubmit}>Success</Button>
+                <Button type="Success" clicked={this.onAuthSubmit}>SUBMIT</Button>
+                <Button type="Danger" clicked={this.switchAuthMode}>Switch to {this.state.isSignUp ? 'Sign In' : 'Sign Up'}</Button>
             </div>
         )
     }
@@ -124,7 +132,7 @@ class Auth extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authorize: (email, password) => dispatch(auth(email, password))
+        signUp: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
     }
 }
 
