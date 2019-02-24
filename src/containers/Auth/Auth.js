@@ -1,9 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css'
 import { auth } from '../../store/actions/'
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom'
+import Spinner from '../../components/UI/Spinner/Spinner';
+import queryString from 'query-string'
 
 class Auth extends Component {
     state = {
@@ -11,7 +14,7 @@ class Auth extends Component {
             email: this.getFormInput('input', { type: 'email', placeholder: 'Email Address' }, { required: true, minLength: 3, isEmail: true }),
             password: this.getFormInput('input', { type: 'password', placeholder: 'Password' }, { required: true, minLength: 6 })
         },
-        isSignUp: true
+        isSignUp: false
     }
 
     getFormInput(type, config, validation) {
@@ -70,7 +73,7 @@ class Auth extends Component {
     }
 
     onAuthSubmit = () => {
-        this.props.signUp(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
+        this.props.authenticate(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
     }
 
     inputChangedHandler = (event, controlName) => {
@@ -119,21 +122,42 @@ class Auth extends Component {
                 {inputElements}
             </form>
         );
+
+        let authContent = this.props.loading ? <Spinner /> :
+            (
+                <div className={classes.Auth}>
+                    {form}
+                    {this.props.error ? <h4 style={{color: 'red'}}>Authentication Error.  Try again</h4> : null}
+                    <Button type="Success" clicked={this.onAuthSubmit}>SUBMIT</Button>
+                    <Button type="Danger" clicked={this.switchAuthMode}>Switch to {this.state.isSignUp ? 'Sign In' : 'Sign Up'}</Button>
+                </div>
+            )
+        
+        if(this.props.isLoggedIn) {
+            const params = queryString.parse(this.props.location.search)
+            authContent = <Redirect to={params.redirect || '/'} />
+        }
         
         return (
-            <div className={classes.Auth}>
-                {form}
-                <Button type="Success" clicked={this.onAuthSubmit}>SUBMIT</Button>
-                <Button type="Danger" clicked={this.switchAuthMode}>Switch to {this.state.isSignUp ? 'Sign In' : 'Sign Up'}</Button>
-            </div>
+            <Fragment>
+                {authContent}
+            </Fragment>
         )
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error,
+        isLoggedIn: state.auth.token
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        signUp: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
+        authenticate: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

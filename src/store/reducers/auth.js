@@ -2,7 +2,7 @@ import * as actions from '../actions/actionTypes'
 import { updateObject } from '../utils'
 
 const initialState = {
-    token: null,
+    token: localStorage.getItem('FIREBASE_TOKEN'),
     userId: null,
     error: false,
     loading: false
@@ -24,9 +24,17 @@ const authReducer = (state = initialState, action) => {
         case actions.AUTH_FAILED:
             return updateObject(state, {error: action.error, loading: false});
         
+        case actions.AUTH_LOGOUT:
+            return updateObject(state, {
+                token: null,
+                userId: null,
+                error: null,
+                loading: false
+            });
+
         default:
             return state;
     }
 }
 
-export {authReducer as auth }
+export { authReducer as auth }

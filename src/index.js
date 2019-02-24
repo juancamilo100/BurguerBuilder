@@ -19,9 +19,18 @@ const rootReducer = combineReducers({
     orders,
     auth
 })
+
 const store = createStore(rootReducer, composeEnhancers(
     applyMiddleware(thunk)
 ));
+
+store.subscribe(() => {
+    if(store.getState().auth.token) {
+        localStorage.setItem('FIREBASE_TOKEN', store.getState().auth.token);
+    } else {
+        localStorage.removeItem('FIREBASE_TOKEN');
+    }
+});
 
 const app = (
     <Provider store={store}>
