@@ -2,7 +2,8 @@ import * as actions from '../actions/actionTypes'
 import { updateObject } from '../utils'
 
 const initialState = {
-    token: localStorage.getItem('FIREBASE_TOKEN'),
+    token: null,
+    expiresIn: null,
     userId: null,
     error: false,
     loading: false
@@ -17,6 +18,7 @@ const authReducer = (state = initialState, action) => {
             return updateObject(state, {
                 token: action.token,
                 userId: action.userId,
+                expiresIn: action.expiresIn,
                 error: null,
                 loading: false
             })

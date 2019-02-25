@@ -7,11 +7,12 @@ const authStart = () => {
     }
 }
 
-const authSuccess = (token, userId) => {
+const authSuccess = (token, userId, expiresIn) => {
     return {
         type: actions.AUTH_SUCCESS,
         token,
-        userId
+        userId,
+        expiresIn
     }
 }
 
@@ -36,6 +37,25 @@ const startAuthTimeout = (expiresIn) => {
     }
 }
 
+export const authCheckInitialState = () => {
+    return (dispatch) => {
+        const token = localStorage.getItem('FIREBASE_TOKEN');
+        if(!token) {
+            dispatch(logout());
+        } else {
+            const expirationDate = new Date(localStorage.getItem('FIREBASE_TOKEN_EXPIRATION'));
+            const userId = localStorage.getItem('FIREBASE_USER_ID')
+
+            if(expirationDate <= new Date()) {
+                dispatch(logout());
+            }
+
+            dispatch(authSuccess(token, userId, expirationDate));
+            dispatch(startAuthTimeout(expirationDate.getTime() - new Date().getTime()))
+        }
+    }
+}
+
 export const auth = (email, password, isSignup) => {
     return async (dispatch) => {
         dispatch(authStart())
@@ -52,11 +72,15 @@ export const auth = (email, password, isSignup) => {
                     returnSecureToken: true
                 }
                 );
-                dispatch(authSuccess(response.data.idToken, response.data.localId))
+                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
+                
+                dispatch(authSuccess(
+                    response.data.idToken, 
+                    response.data.localId,
+                    expirationDate));
+
                 dispatch(startAuthTimeout(response.data.expiresIn * 1000))
             } catch (error) {
-            console.log(error);
-            
             dispatch(authFailed(error))
         }
     }

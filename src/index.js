@@ -10,6 +10,7 @@ import {
     orders,
     auth
 } from './store/reducers/'
+import * as actions from './store/actions/auth'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk';
 
@@ -27,10 +28,16 @@ const store = createStore(rootReducer, composeEnhancers(
 store.subscribe(() => {
     if(store.getState().auth.token) {
         localStorage.setItem('FIREBASE_TOKEN', store.getState().auth.token);
+        localStorage.setItem('FIREBASE_TOKEN_EXPIRATION', store.getState().auth.expiresIn);
+        localStorage.setItem('FIREBASE_USER_ID', store.getState().auth.userId);
     } else {
         localStorage.removeItem('FIREBASE_TOKEN');
+        localStorage.removeItem('FIREBASE_TOKEN_EXPIRATION');
+        localStorage.removeItem('FIREBASE_USER_ID');
     }
 });
+
+store.dispatch(actions.authCheckInitialState());
 
 const app = (
     <Provider store={store}>
