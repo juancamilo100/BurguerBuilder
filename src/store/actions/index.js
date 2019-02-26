@@ -10,3 +10,9 @@ export {
     purchaseBurgerStart,
     purchaseInit
 } from './order'
+
+export {
+    auth,
+    logout,
+    authCheckInitialState
+} from './auth'

@@ -3,6 +3,7 @@ import Order from '../../components/Order/Order'
 import axios from '../../axios-orders'
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom'
 import {
     fetchOrders,
 } from '../../store/actions'
@@ -26,6 +27,10 @@ class Orders extends Component {
             });
         };
 
+        if(!this.props.isLoggedIn) {
+            orders = <Redirect to='/login' />
+        }
+
         return (
             <div>
                 {orders}
@@ -37,7 +42,8 @@ class Orders extends Component {
 const mapStateToProps = (state) => {
     return {
         orders: state.orders.orders,
-        loading: state.orders.loading
+        loading: state.orders.loading,
+        isLoggedIn: state.auth.token
     }
 }
 

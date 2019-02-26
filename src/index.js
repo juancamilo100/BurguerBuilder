@@ -7,19 +7,37 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import {
     burgerBuilder,
-    orders
+    orders,
+    auth
 } from './store/reducers/'
+import * as actions from './store/actions/auth'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
     burgerBuilder,
-    orders
+    orders,
+    auth
 })
+
 const store = createStore(rootReducer, composeEnhancers(
     applyMiddleware(thunk)
 ));
+
+store.subscribe(() => {
+    if(store.getState().auth.token) {
+        localStorage.setItem('FIREBASE_TOKEN', store.getState().auth.token);
+        localStorage.setItem('FIREBASE_TOKEN_EXPIRATION', store.getState().auth.expiresIn);
+        localStorage.setItem('FIREBASE_USER_ID', store.getState().auth.userId);
+    } else {
+        localStorage.removeItem('FIREBASE_TOKEN');
+        localStorage.removeItem('FIREBASE_TOKEN_EXPIRATION');
+        localStorage.removeItem('FIREBASE_USER_ID');
+    }
+});
+
+store.dispatch(actions.authCheckInitialState());
 
 const app = (
     <Provider store={store}>

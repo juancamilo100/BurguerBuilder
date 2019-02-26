@@ -1,4 +1,4 @@
-import actions from '../actions/actionTypes'
+import * as actions from '../actions/actionTypes'
 import { updateObject } from '../utils'
 
 const MIN_PRICE = 4
