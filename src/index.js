@@ -13,6 +13,8 @@ import {
 import * as actions from './store/actions/auth'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga'
+import rootSaga from './store/sagas/'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
@@ -21,8 +23,10 @@ const rootReducer = combineReducers({
     auth
 })
 
+const sagaMiddleware = createSagaMiddleware();
+
 const store = createStore(rootReducer, composeEnhancers(
-    applyMiddleware(thunk)
+    applyMiddleware(thunk, sagaMiddleware)
 ));
 
 store.subscribe(() => {
@@ -36,6 +40,8 @@ store.subscribe(() => {
         localStorage.removeItem('FIREBASE_USER_ID');
     }
 });
+
+sagaMiddleware.run(rootSaga);
 
 store.dispatch(actions.authCheckInitialState());
 

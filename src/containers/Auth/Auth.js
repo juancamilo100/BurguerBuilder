@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css'
-import { auth } from '../../store/actions/'
+import { authStart } from '../../store/actions/'
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -141,6 +141,7 @@ class Auth extends Component {
         return (
             <Fragment>
                 {authContent}
+                <button onClick={this.onAuthSubmit}>Click Me!</button>
             </Fragment>
         )
     }
@@ -156,7 +157,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authenticate: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
+        authenticate: (email, password, isSignup) => dispatch(authStart(email, password, isSignup))
     }
 }
 

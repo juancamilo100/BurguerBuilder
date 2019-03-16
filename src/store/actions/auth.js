@@ -1,13 +1,17 @@
 import * as actions from '../actions/actionTypes'
-import axios from 'axios'
 
-const authStart = () => {
+export const authStart = (email, password, isSignup) => {
     return {
-        type: actions.AUTH_START
+        type: actions.AUTH_START,
+        payload: {
+            email, 
+            password, 
+            isSignup
+        }
     }
 }
 
-const authSuccess = (token, userId, expiresIn) => {
+export const authSuccess = (token, userId, expiresIn) => {
     return {
         type: actions.AUTH_SUCCESS,
         token,
@@ -16,7 +20,7 @@ const authSuccess = (token, userId, expiresIn) => {
     }
 }
 
-const authFailed = (error) => {
+export const authFailed = (error) => {
     return {
         type: actions.AUTH_FAILED,
         error
@@ -29,7 +33,7 @@ export const logout = () => {
     }
 }
 
-const startAuthTimeout = (expiresIn) => {
+export const startAuthTimeout = (expiresIn) => {
     return (dispatch) => {
             setTimeout(() => {
             dispatch(logout());
@@ -52,36 +56,6 @@ export const authCheckInitialState = () => {
 
             dispatch(authSuccess(token, userId, expirationDate));
             dispatch(startAuthTimeout(expirationDate.getTime() - new Date().getTime()))
-        }
-    }
-}
-
-export const auth = (email, password, isSignup) => {
-    return async (dispatch) => {
-        dispatch(authStart())
-        try {
-            const url = isSignup ?
-            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${process.env.REACT_APP_FIREBASE_API_KEY}` :
-            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${process.env.REACT_APP_FIREBASE_API_KEY}`;
-            
-            const response = await axios.post(
-                url,
-                {
-                    email,
-                    password,
-                    returnSecureToken: true
-                }
-                );
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                
-                dispatch(authSuccess(
-                    response.data.idToken, 
-                    response.data.localId,
-                    expirationDate));
-
-                dispatch(startAuthTimeout(response.data.expiresIn * 1000))
-            } catch (error) {
-            dispatch(authFailed(error))
         }
     }
 }

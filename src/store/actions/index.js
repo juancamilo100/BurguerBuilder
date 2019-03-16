@@ -12,7 +12,10 @@ export {
 } from './order'
 
 export {
-    auth,
     logout,
-    authCheckInitialState
+    authCheckInitialState,
+    authSuccess,
+    authFailed,
+    startAuthTimeout,
+    authStart
 } from './auth'
